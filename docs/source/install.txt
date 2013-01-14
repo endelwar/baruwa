@@ -31,16 +31,16 @@ Install via the Python Package Index (PyPI)
 
 To install using `pip`::
 
-    # pip install baruwa
+    # pip install baruwa < 2.0.0
 
 To install using `easy_install`::
 
-    # easy_install baruwa
+    # easy_install baruwa < 2.0.0
 
 Downloading and installing from source
 --------------------------------------
 
-Download the latest version of Baruwa from `PyPI`_
+Download the latest version of Baruwa 1.0 from `PyPI`_
 
 You can install it by doing the following,::
 
