@@ -269,10 +269,13 @@ class ActiveDirectoryBackend(ModelBackend):
         for host in hosts:
             # process all hosts
 	
-	    # Query each host for configured AD settings:
-	    adset = MailADAuthHost.objects.get(ad_host=host)
-
-	    aduser = ADUser(username, host.address, host.port, adset.ad_search_dn, adset.ad_admin_group, adset.ad_user_group, adset.ad_auth_domain)
+            # Query each host for configured AD settings:
+            try:
+                adset = MailADAuthHost.objects.get(ad_host=host)
+                aduser = ADUser(username, host.address, host.port, adset.ad_search_dn, adset.ad_admin_group, adset.ad_user_group, adset.ad_auth_domain)
+            except MailADAuthHost.DoesNotExist:
+                logger.warning("No MySQL MailADAuthHost; using setting.py AD config\n")
+                aduser = ADUser(username, host.address, host.port, adset, adset, adset, adset)
 
             if not aduser.connect(password):
                 logger.warning("AD bind failed for %s\n" % username)
@@ -291,7 +294,7 @@ class ActiveDirectoryBackend(ModelBackend):
 
             if not aduser.get_data():
                 logger.warning("AD auth backend failed when reading data for"
-                " %s. No Group information available.\nAD_Auth_Domain:%s\tAD_Admin_Group:%s\tAD_User_Group:%s" % (username,adset.ad_auth_domain,adset.ad_admin_group,adset.ad_user_group))
+                " %s. No Group information available." % username)
                 user = None
                 continue
             else:
