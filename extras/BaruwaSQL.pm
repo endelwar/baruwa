@@ -26,6 +26,7 @@ use POSIX;
 use IO::Socket;
 use DBI;
 use MailScanner::Config;
+use Encoding::FixLatin qw(fix_latin);
 
 my ( $conn, $bconn, $sth, $bsth, $server );
 my ($hostname)  = hostname;
@@ -433,7 +434,7 @@ sub BaruwaSQL {
     $msg{from_domain}   = $message->{fromdomain};
     $msg{to_address}    = join( ",", @{ $message->{to} } );
     $msg{to_domain}     = $todomain;
-    $msg{subject}       = $message->{utf8subject};
+    $msg{subject}       = fix_latin($message->{utf8subject});
     $msg{clientip}      = $clientip;
     $msg{spam}          = $message->{isspam};
     $msg{highspam}      = $message->{ishigh};
@@ -449,7 +450,7 @@ sub BaruwaSQL {
     $msg{hostname}      = $hostname;
     $msg{date}          = $date;
     $msg{time}          = $time;
-    $msg{headers}       = join( "\n", @{ $message->{headers} } );
+    $msg{headers}       = fix_latin(join( "\n", @{ $message->{headers} } ));
     $msg{actions}       = $message->{actions};
     $msg{isquarantined} = $quarantined;
     $msg{scaned}      = $message->{scanmail};
